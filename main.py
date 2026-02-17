@@ -23,46 +23,81 @@ if __name__ == '__main__':
                                                errors="coerce",
                                                format = "%Y-%m-%d")
 
-
     #print(products_df)
 
 
-    # Flagga:
+    # Create: Conditions for flagging data
+    flagged_conditions = (
+            (products_df["price"] > 10000) |
+            (products_df["price"] == 0)
+    )
 
-    # Höga priser
+    # Create: Conditions for rejecting data
+    reject_conditions = (
+            (products_df["id"].isna()) |
+            (products_df["name"].isna()) |
+            (products_df["price"].isna()) |
+            (products_df["price"] < 0) |
+            (products_df["currency"].isna()) |
+            (products_df["created_at"].isna())
+    )
 
-    # Låga priser
+    # Reason for flagg
+    products_df["reason"] = ""
 
-
-    # Avvisa:
-
-    # Minusbelopp
-
-
-
-    # Visar endast ut True värden/flaggar
-    missing_id = products_df[products_df["id"].isna()]
-    missing_name = products_df[products_df["name"].isna()]
-    missing_price = products_df[products_df["price"].isna()]
-    missing_currency = products_df[products_df["currency"].isna()]
-    missing_created_at = products_df[products_df["created_at"].isna()]
-
-    ########################
-    ######## Reject ########
-    ########################
-
-    # Lägger till data som ska avvisas i ny csv-fil
-    missing_id.to_csv("rejected_products.csv", index = False)
-    missing_name.to_csv("rejected_products.csv", mode="a", index = False)
-    missing_price.to_csv("rejected_products.csv", mode="a", index = False)
-    missing_currency.to_csv("rejected_products.csv", mode="a", index = False)
-    missing_created_at.to_csv("rejected_products.csv", mode="a", index = False)
-
-    # Läser rejected_products.csv, tar bort dubbletter och skriver över i filen
-    remove_duplicates = pd.read_csv("rejected_products.csv")
-    remove_duplicates.drop_duplicates(inplace = True)
-
-    # mode='w' == overwrite the file
-    remove_duplicates.to_csv("rejected_products.csv", mode="w", index = False)
+    products_df.loc[products_df["price"] > 10000, "reason"] = "HIGH PRICE"
+    products_df.loc[products_df["price"] == 0, "reason"] = "NO COST"
 
 
+    # Separate the data
+    df_rejected = products_df[reject_conditions].copy()
+    df_flagged = products_df[flagged_conditions].copy()
+    df_valid = products_df[~reject_conditions & ~flagged_conditions].copy()
+
+    # For calculations with flagged data, show the difference with high/no price products
+    df_valid_with_flaggs = products_df[~reject_conditions].copy()
+
+
+
+    #print(df_valid)
+
+    #Create:
+    df_summary = pd.DataFrame({
+        "Mean Price": [df_valid["price"].mean()],
+        "Median Price": [df_valid["price"].median()],
+        "Product Amount": [len(df_valid)],
+        "Products Without Price": [len(df_valid[df_valid["price"] == 0])]
+    })
+
+    df_summary.to_csv("data/analytic_summary.csv", index=False)
+
+
+    # Show the difference in analytics with high/no price products
+    df_summary_with_flaggs = pd.DataFrame({
+        "Mean Price": [df_valid_with_flaggs["price"].mean()],
+        "Median Price": [df_valid_with_flaggs["price"].median()],
+        "Product Amount": [len(df_valid_with_flaggs)],
+        "Without Price Not Counted": [len(df_flagged)]
+    })
+
+    df_summary_with_flaggs.to_csv("data/analytic_summary_with_flaggs.csv", index=False)
+
+
+
+
+
+    # Reason for rejection
+    df_rejected["reason"] = ""
+
+    df_rejected.loc[products_df["id"].isna(), "reason"] = "MISSING ID"
+    df_rejected.loc[products_df["name"].isna(), "reason"] = "MISSING NAME"
+    df_rejected.loc[products_df["price"].isna(), "reason"] = "MISSING PRICE"
+    df_rejected.loc[products_df["price"] < 0, "reason"] = "NEGATIVE PRICE"
+    df_rejected.loc[products_df["currency"].isna(), "reason"] = "MISSING CURRENCY"
+    df_rejected.loc[products_df["created_at"].isna(), "reason"] = "MISSING CREATED_AT"
+
+
+    #print(df_rejected)
+
+    # Create: csv-file for rejected data
+    df_rejected.to_csv("data/rejected_products.csv", index=False)
