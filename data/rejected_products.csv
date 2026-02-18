@@ -1,4 +1,4 @@
-id,name,price,currency,created_at,reason
+id,name,price,currency,created_at,status
 SKU-1003,Shirts,450.0,SEK,,MISSING CREATED_AT
 ,Jacket,-200.0,SEK,,MISSING CREATED_AT
 SKU-1005,,,,,MISSING CREATED_AT
