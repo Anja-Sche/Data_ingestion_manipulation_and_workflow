@@ -1,13 +1,13 @@
 # Data Ingestion, manipulation & workflow
 
----
+
 In this README you will find information about this project, information about the code and choices in the project. 
 
 - You can find the code in [main.py](main.py).
 - You can find the theoretical in [theory](theory.md).
 
 
----
+
 
 # Laboration
 By working with Pandas I have followed the flow of reading a csv-file with data such as id, name, price and so on.
@@ -21,14 +21,14 @@ The csv-file uses ';' as its delimiter instead of a comma. To be able to work wi
 ```python
 products_df = pd.read_csv("lab 1 - csv.csv", sep = ";")
 ```
----
+
 ## Clean the data
 For an analysis to be as accurate as possible the data needs to be cleaned. If not, the data could show  wrong results.
 In this case some cleaning is not necessary for this data, but if a new file was provided it can contain other inconsistencies.
 
 When working with a larger amount of data you will need to clean the data even more. More data == more inconsistencies.
 
----
+
 
 ## Conditions
 Conditions is a great way checking the data to see what data is missing information or might be off in its value.
@@ -41,7 +41,8 @@ The data is usable to do calculations due to the other information.
 
 In the analyses the price is necessary for the calculations. I have chosen to do two different analyses, one including flagged data and one with only valid data.
 Flaggd data contains a price and currency but might miss other information. 
----
+
+
 
 ## Status message
 A clear way to see information about the data is a status message or reason. It can be if something is missing like price or currency.
@@ -52,7 +53,7 @@ Example of reject message:
 products_df.loc[products_df["price"].isna(), "status"] = "MISSING PRICE"
 products_df.loc[products_df["price"] < 0, "status"] = "NEGATIVE PRICE"
 ```
----
+
 
 ## Separera data
 When separating the data further in to the code, the reject and flagged conditions makes it easy.
@@ -68,7 +69,8 @@ To get the data that is valid we use '~reject_conditions', this gives us th oppo
 When analyzing you some only want correct data and some want to include the flagged data. Flagged data can be correct, 
 you won't know until it has been checked.
 Due to not having that possibility in this exercise, I have done different analyses as mentioned above.
----
+
+
 ## Analysis
 
 ### Analytics Summary
@@ -106,7 +108,7 @@ the median of the prices to compare to.
 
 When comparing the valid data and the flagged data, the major difference is that we get a low price in the top ten
 deviating prices due to not having as many high prices.
----
+
 ### Skapa csv-filer
 When the analyses are done they are written into a csv-file. For analytics summary, price analysis and the rejected data.
 You can find them under [data](data)
