@@ -7,13 +7,14 @@ In this README you will find information about this project, information about t
 - You can find the theoretical in [theory](theory.md).
 
 
-
+<div style="margin-bottom: 3em;"></div>
 
 # Laboration
 By working with Pandas I have followed the flow of reading a csv-file with data such as id, name, price and so on.
 Some information in the file is missing or is inconsistent. For the data to be ready for analysis it has to be
 cleaned, flagged and rejected to know which data us usable.
 
+<div style="margin-bottom: 3em;"></div>
 
 ## Read the file
 The first step is to read the file and get the data, this by using the 'read_csv()' function. 
@@ -22,13 +23,15 @@ The csv-file uses ';' as its delimiter instead of a comma. To be able to work wi
 products_df = pd.read_csv("lab 1 - csv.csv", sep = ";")
 ```
 
+<div style="margin-bottom: 3em;"></div>
+
 ## Clean the data
 For an analysis to be as accurate as possible the data needs to be cleaned. If not, the data could show  wrong results.
 In this case some cleaning is not necessary for this data, but if a new file was provided it can contain other inconsistencies.
 
 When working with a larger amount of data you will need to clean the data even more. More data == more inconsistencies.
 
-
+<div style="margin-bottom: 3em;"></div>
 
 ## Conditions
 Conditions is a great way checking the data to see what data is missing information or might be off in its value.
@@ -42,7 +45,7 @@ The data is usable to do calculations due to the other information.
 In the analyses the price is necessary for the calculations. I have chosen to do two different analyses, one including flagged data and one with only valid data.
 Flaggd data contains a price and currency but might miss other information. 
 
-
+<div style="margin-bottom: 3em;"></div>
 
 ## Status message
 A clear way to see information about the data is a status message or reason. It can be if something is missing like price or currency.
@@ -54,6 +57,7 @@ products_df.loc[products_df["price"].isna(), "status"] = "MISSING PRICE"
 products_df.loc[products_df["price"] < 0, "status"] = "NEGATIVE PRICE"
 ```
 
+<div style="margin-bottom: 3em;"></div>
 
 ## Separera data
 When separating the data further in to the code, the reject and flagged conditions makes it easy.
@@ -70,6 +74,7 @@ When analyzing you some only want correct data and some want to include the flag
 you won't know until it has been checked.
 Due to not having that possibility in this exercise, I have done different analyses as mentioned above.
 
+<div style="margin-bottom: 3em;"></div>
 
 ## Analysis
 
@@ -90,6 +95,7 @@ When using the flagged and not flagged data the average price of the two has a d
 This shows the importance of checking the data before using it, depending on what you are looking for. 
 If the flagged data shows to not be correct, the average price will seem much higher than it actually is.
 
+<div style="margin-bottom: 2em;"></div>
 
 ### Price Analysis
 The second analysis is to show the ten most expensive products and the top ten most deviating prices. 
@@ -108,6 +114,8 @@ the median of the prices to compare to.
 
 When comparing the valid data and the flagged data, the major difference is that we get a low price in the top ten
 deviating prices due to not having as many high prices.
+
+<div style="margin-bottom: 2em;"></div>
 
 ### Skapa csv-filer
 When the analyses are done they are written into a csv-file. For analytics summary, price analysis and the rejected data.

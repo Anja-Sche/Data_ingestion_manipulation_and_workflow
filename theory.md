@@ -19,6 +19,8 @@ Here the data is made available for the users. It can e.g. be shown on a dashboa
 we make the data ready for analysis when sorting out the transformed data into df_valid, but it is not accessible. When we 
 write the data into csv-files we make it accessible for others to use and acquire.
 
+<div style="margin-bottom: 3em;"></div>
+
 # Technologies
 ## Psycopc3
 
@@ -38,6 +40,7 @@ what type the return value should be. It is a fast validation library. A Pydanti
 BaseModel, it lets you define the schema or structure of the data and makes sure that the structure will be followed when receiving 
 and sending data.
 
+<div style="margin-bottom: 3em;"></div>
 
 # ETL
 This process helps to get high quality data, handel large amounts of data and makes it easy to maintain .
