@@ -29,7 +29,9 @@ if __name__ == '__main__':
                                )
 
     # Clean data in 'created_at', turn into datetime -> non datetime values into 'NaT'
-    products_df["created_at"] = products_df["created_at"].str.replace("/", "-")
+    products_df["created_at"] = pd.to_datetime(products_df["created_at"],
+                                               errors="coerce",
+                                               format="%Y-%m-%d")
 
 
     """ 
@@ -39,7 +41,7 @@ if __name__ == '__main__':
 
     # Create: Conditions for flagging data
     flagged_conditions = (
-            ((products_df["name"].isna()) & (products_df["price"] >= 0)) |
+            (products_df["name"].isna())  |
             (products_df["created_at"].isna()) |
             (products_df["price"] > 10000) |
             (products_df["price"] == 0)
@@ -47,12 +49,11 @@ if __name__ == '__main__':
 
     # Create: Conditions for rejecting data
     reject_conditions = (
-            ((products_df["id"].isna()) & (products_df["price"].isna())) |
+            (products_df["id"].isna()) |
             (products_df["price"].isna()) |
             (products_df["currency"].isna() |
             (products_df["price"] < 0))
     )
-
 
     """ 
     Create status messages
@@ -61,21 +62,25 @@ if __name__ == '__main__':
     # Status message
     products_df["status"] = ""
 
-    products_df.loc[products_df["id"] != "NaN", "status"] = "VALID"
+    conditions_messages = [
+        # Reject conditions, first priority
+        (products_df["price"].isna(), "MISSING PRICE"),
+        (products_df["price"] < 0, "NEGATIVE PRICE"),
+        (products_df["currency"].isna(), "MISSING CURRENCY"),
+        (products_df["id"].isna(), "MISSING ID"),
+
+        # Flagged conditions
+        (products_df["name"].isna(), "MISSING NAME"),
+        (products_df["price"] > 10000, "HIGH PRICE"),
+        (products_df["created_at"].isna(), "MISSING CREATED_AT"),
+        (products_df["price"] == 0, "NO COST")
+    ]
 
 
-    # Reject reasons
-    products_df.loc[~products_df["id"].str.contains("^SKU-"), "status"] = "Wrong ID"
-    products_df.loc[products_df["id"].isna(), "status"] = "MISSING ID"
-    products_df.loc[products_df["price"].isna(), "status"] = "MISSING PRICE"
-    products_df.loc[products_df["price"] < 0, "status"] = "NEGATIVE PRICE"
-    products_df.loc[products_df["currency"].isna(), "status"] = "MISSING CURRENCY"
+    for condition, message in conditions_messages:
+        products_df.loc[condition & (products_df["status"] == ""), "status"] = message
 
-    # Flagg reasons
-    products_df.loc[products_df["name"].isna(), "status"] = "MISSING NAME"
-    products_df.loc[products_df["price"] > 10000, "status"] = "HIGH PRICE"
-    products_df.loc[products_df["created_at"].isna(), "status"] = "MISSING CREATED_AT"
-    products_df.loc[products_df["price"] == 0, "status"] = "NO COST"
+    products_df.loc[products_df["status"] == "", "status"] = "VALID"
 
 
     """ 
